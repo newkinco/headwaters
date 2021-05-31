@@ -5,6 +5,7 @@ import { useTexture } from "@react-three/drei";
 
 const FaceAction = ({
   name,
+  url,
   args = [1, 1],
   position: initialPosition = [0, 0, 0],
   rotation: initialRotation = [0, 0, 0],
@@ -14,20 +15,25 @@ const FaceAction = ({
 }) => {
   const [hover, setHover] = useState(false);
   const material = useRef(null);
-  const { scale, rotation, position } = useControls({
-    scale: initialScale,
-    position: initialPosition,
-    rotation: initialRotation,
-  });
 
   const [map, mapHover] = useTexture([
     `/images/${name}.${extension}`,
     `/images/${name}-hover.${extension}`,
   ]);
 
+  const { scale, rotation, position } = useControls(
+    name,
+    {
+      scale: initialScale,
+      position: initialPosition,
+      rotation: initialRotation,
+    },
+    { collapsed: true },
+  );
+
   const toggleHover = (newState) => () => setHover(newState);
 
-  const onClick = () => alert("click");
+  const onClick = () => window.open(url, '_blank')
 
   useEffect(() => {
     map.encoding = THREE.sRGBEncoding;

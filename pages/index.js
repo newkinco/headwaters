@@ -1,12 +1,35 @@
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stats } from "@react-three/drei";
-import Cube from '../components/cube';
+import { Leva } from "leva";
+import Cube from "../components/Cube";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const [showPointer, setShowPointer] = useState(false);
+  const [controlsEnabled, setControlsEnabled] = useState(false);
+  const { query } = useRouter();
+
+  useEffect(() => {
+    const key = 'showcontrols'
+
+    const hascontrolsEnabled = Object.keys(query).some((i) => i === key)
+    if (!hascontrolsEnabled) {
+      setControlsEnabled(false)
+      return
+    }
+
+    const shouldHide = query[key] === 'false'
+    if (shouldHide) {
+      setControlsEnabled(false)
+      return
+    }
+
+    setControlsEnabled(true)
+  }, [query])
 
   return (
     <div
@@ -21,11 +44,23 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Canvas style={{ height: "100vh", width: "100vw" }}>
+      <Leva collapsed hidden={!controlsEnabled} />
+
+      <Canvas
+        style={{ height: "100vh", width: "100vw" }}
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.NoToneMapping;
+        }}
+      >
         <Suspense fallback={null}>
-          <axesHelper />
+          {controlsEnabled && (
+            <>
+              <axesHelper />
+              <Stats />
+            </>
+          )}
+
           <ambientLight />
-          <Stats />
           <OrbitControls
             rotateSpeed={0.5}
             enableDamping
