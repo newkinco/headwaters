@@ -48,9 +48,7 @@ export default function Home() {
 
       <Canvas
         style={{ height: "100vh", width: "100vw" }}
-        onCreated={({ gl }) => {
-          gl.toneMapping = THREE.NoToneMapping;
-        }}
+        onCreated={({ gl }) => (gl.toneMapping = THREE.NoToneMapping)}
       >
         <Suspense fallback={null}>
           {controlsEnabled && (
@@ -62,10 +60,11 @@ export default function Home() {
 
           <ambientLight />
           <OrbitControls
-            rotateSpeed={0.5}
+            enablePan={false}
             enableDamping
             dampingFactor={0.1}
-            enablePan={false}
+            rotateSpeed={0.5}
+            maxDistance={9}
           />
 
           <Cube setShowPointer={setShowPointer} />
