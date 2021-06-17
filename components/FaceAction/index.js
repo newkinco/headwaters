@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 import { useTexture } from "@react-three/drei";
+import { isMobile } from 'react-device-detect';
 
 const FaceAction = ({
   name,
@@ -33,7 +34,11 @@ const FaceAction = ({
 
   const toggleHover = (newState) => () => setHover(newState);
 
-  const onClick = () => window.open(url, '_blank')
+  const onNavigate = () => window.open(url, '_blank')
+
+  const onClick = () => !isMobile && onNavigate()
+
+  const onPointerDown = () => isMobile && onNavigate()
 
   useEffect(() => {
     map.encoding = THREE.sRGBEncoding;
@@ -51,6 +56,7 @@ const FaceAction = ({
       position={position}
       rotation={rotation}
       onClick={onClick}
+      onPointerDown={onPointerDown}
       onPointerOver={toggleHover(true)}
       onPointerOut={toggleHover(false)}
     >
